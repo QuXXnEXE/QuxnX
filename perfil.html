@@ -1,95 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mi Perfil</title>
+
+<style>
+body{
+    background:white;
+    font-family:Arial;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+
+.perfilBox{
+    width:650px;
+    height:420px;
+    background:#f1f1f1;
+    border-radius:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+    padding:30px;
+    position:relative;
+    overflow:hidden;
+}
+
+.fotoPerfil{
+    position:absolute;
+    top:20px;
+    right:20px;
+    text-align:center;
+}
+
+.fotoPerfil img{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    object-fit:cover;
+    background:white;
+}
+
+.decoracion{
+    position:absolute;
+    width:120px;
+    cursor:grab;
+}
+
+button{
+    margin-top:10px;
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(45deg,#caa43b,#f3d87a);
+    cursor:pointer;
+}
+
+.permisos{
+    margin-top:140px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="perfilBox" id="box">
+    <h2 id="nombreUsuario"></h2>
+
+    <div class="fotoPerfil">
+        <img id="pfp" src="https://cdn-icons-png.flaticon.com/512/616/616490.png">
+        <br>
+        <input type="file" id="pfpInput">
+    </div>
+
+    <div class="permisos">
+        <h3>Permisos:</h3>
+        <p id="permisoTexto"></p>
+        <input type="file" id="decorInput">
+        <p>Subir imagen decorativa</p>
+    </div>
+</div>
+
 <script>
-// sonido meow
 const meow = new Audio("https://www.fesliyanstudios.com/play-mp3/387");
 
-// nombre usuario
-let user = localStorage.getItem("currentUser");
+let user = localStorage.getItem("currentUser") || "Invitado";
 document.getElementById("nombreUsuario").innerText = user;
 
-// permisos
-if(user === "Queen Ankarian"){
-    document.getElementById("permisoTexto").innerText = "Cuenta del creador 👑";
-}else{
-    document.getElementById("permisoTexto").innerText = "Usuario normal";
-}
+if(user === "Queen Ankarian")
+    permisoTexto.innerText="Cuenta del creador 👑";
+else
+    permisoTexto.innerText="Usuario normal";
 
 // FOTO PERFIL
 let savedPfp = localStorage.getItem("pfp");
-if(savedPfp) document.getElementById("pfp").src = savedPfp;
+if(savedPfp) pfp.src=savedPfp;
 
-document.getElementById("pfpInput").onchange = function(){
-    let reader = new FileReader();
-    reader.onload = e => {
-        localStorage.setItem("pfp", e.target.result);
-        document.getElementById("pfp").src = e.target.result;
+pfpInput.onchange = function(){
+    let reader=new FileReader();
+    reader.onload=e=>{
+        localStorage.setItem("pfp",e.target.result);
+        pfp.src=e.target.result;
         meow.play();
     }
     reader.readAsDataURL(this.files[0]);
-};
-
-// LISTA DE IMAGENES DECORATIVAS
-let decorList = JSON.parse(localStorage.getItem("decorList") || "[]");
-let box = document.getElementById("box");
-
-// CREAR imagen decorativa en pantalla
-function createDecor(imgData,x=50,y=50){
-    let img = document.createElement("img");
-    img.src = imgData;
-    img.className = "decoracion";
-    img.style.left = x+"px";
-    img.style.top = y+"px";
-    box.appendChild(img);
-
-    // mover
-    let dragging=false;
-    img.onmousedown = ()=> dragging=true;
-    document.onmouseup = ()=> dragging=false;
-    document.onmousemove = e=>{
-        if(!dragging) return;
-        let rect = box.getBoundingClientRect();
-        let nx = e.clientX - rect.left - 60;
-        let ny = e.clientY - rect.top - 60;
-        img.style.left = nx+"px";
-        img.style.top = ny+"px";
-        saveAllDecor();
-    };
-
-    // TRIPLE CLICK = BORRAR
-    img.onclickCount=0;
-    img.onclick = ()=>{
-        img.onclickCount++;
-        setTimeout(()=>img.onclickCount=0,500);
-        if(img.onclickCount===3){
-            img.remove();
-            saveAllDecor();
-        }
-    };
 }
 
-// cargar imágenes guardadas
+// CARGAR DECORACIONES
+let decorList = JSON.parse(localStorage.getItem("decorList")||"[]");
+let box=document.getElementById("box");
+
 decorList.forEach(d=>createDecor(d.img,d.x,d.y));
 
-// guardar todas
-function saveAllDecor(){
+function createDecor(src,x=80,y=80){
+    let img=document.createElement("img");
+    img.src=src;
+    img.className="decoracion";
+    img.style.left=x+"px";
+    img.style.top=y+"px";
+    box.appendChild(img);
+
+    let dragging=false;
+
+    img.onmousedown=()=>dragging=true;
+    document.onmouseup=()=>dragging=false;
+
+    document.onmousemove=e=>{
+        if(!dragging) return;
+        let rect=box.getBoundingClientRect();
+        let nx=e.clientX-rect.left-60;
+        let ny=e.clientY-rect.top-60;
+        img.style.left=nx+"px";
+        img.style.top=ny+"px";
+        saveDecor();
+    }
+
+    // triple click borrar
+    let clicks=0;
+    img.onclick=()=>{
+        clicks++;
+        setTimeout(()=>clicks=0,400);
+        if(clicks===3){
+            img.remove();
+            saveDecor();
+        }
+    }
+}
+
+function saveDecor(){
     let arr=[];
     document.querySelectorAll(".decoracion").forEach(img=>{
         arr.push({
-            img: img.src,
-            x: parseInt(img.style.left)||50,
-            y: parseInt(img.style.top)||50
+            img:img.src,
+            x:parseInt(img.style.left)||80,
+            y:parseInt(img.style.top)||80
         });
     });
     localStorage.setItem("decorList",JSON.stringify(arr));
 }
 
-// subir nuevas decoraciones ilimitadas
-document.getElementById("decorInput").onchange = function(){
-    let reader = new FileReader();
-    reader.onload = e => {
+decorInput.onchange=function(){
+    let reader=new FileReader();
+    reader.onload=e=>{
         createDecor(e.target.result,100,100);
-        saveAllDecor();
+        saveDecor();
         meow.play();
     }
     reader.readAsDataURL(this.files[0]);
-};
+}
 </script>
+
+</body>
+</html>
