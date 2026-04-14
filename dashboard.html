@@ -1,71 +1,71 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-<meta charset="UTF-8">
 <title>Panel</title>
 
 <style>
 body{
-  margin:0;
-  height:100vh;
-  background:white;
-  font-family:Arial;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+    margin:0;
+    background:white;
+    font-family:Arial;
 }
 
-.box{
-  background:#f2f2f2;
-  padding:60px;
-  border-radius:20px;
-  text-align:center;
-  box-shadow:0 15px 40px rgba(0,0,0,0.15);
+/* CUADRO CENTRAL */
+.panel{
+    width:600px;
+    height:380px;
+    background:#eeeeee;
+    border-radius:25px;
+    box-shadow:0 0 20px rgba(0,0,0,0.15);
+    
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    padding:40px;
 }
 
+/* TITULO */
+h1{
+    margin-top:0;
+}
+
+/* CONTENEDOR BOTONES */
+.botones{
+    margin-top:30px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+/* BOTONES */
 button{
-  display:block;
-  width:260px;
-  margin:15px auto;
-  padding:15px;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(45deg,#d4af37,#f1d77a);
-  font-weight:bold;
-  cursor:pointer;
+    padding:18px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(to right,#caa63a,#f1d87a);
+    font-size:16px;
+    cursor:pointer;
 }
-.admin{
-  margin-top:30px;
-  padding:10px;
-  font-weight:bold;
+
+button:hover{
+    transform:scale(1.05);
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-  <h1>¿Qué hacer hoy?</h1>
+<div class="panel">
+    <h1>¿Qué hacer hoy?</h1>
 
-  <button>Explorar Star-versos</button>
-  <button>Biblioteca de personajes</button>
-
-  <div id="adminPanel" class="admin"></div>
+    <div class="botones">
+        <button onclick="location.href='universos.html'">Explorar Star-versos</button>
+        <button onclick="location.href='personajes.html'">Biblioteca de personajes</button>
+        <button onclick="location.href='perfiles.html'">Ver perfiles de otros</button>
+        <button onclick="location.href='perfil.html'">Mi perfil</button>
+    </div>
 </div>
-
-<script>
-let user = localStorage.getItem("currentUser");
-
-if(user === "Queen Ankarian"){
-  document.getElementById("adminPanel").innerHTML =
-  "Cuenta del creador detectada 👑<br>Puedes crear Archiveros";
-}
-</script>
 
 </body>
 </html>
-
-<button>Explorar Star-versos</button>
-<button>Biblioteca de personajes</button>
-<button>Ver perfiles de otros</button>
-<button onclick="location.href='perfil.html'">Mi perfil</button>
