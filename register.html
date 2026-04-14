@@ -5,63 +5,31 @@
 <title>Crear cuenta</title>
 
 <style>
-body{
-  margin:0;
-  height:100vh;
-  background:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-family:Arial, Helvetica, sans-serif;
-}
-
-.box{
-  background:#f2f2f2;
-  padding:50px;
-  border-radius:20px;
-  box-shadow:0 15px 40px rgba(0,0,0,0.15);
-  text-align:center;
-}
-
-input{
-  display:block;
-  width:250px;
-  padding:12px;
-  margin:10px auto;
-  border-radius:8px;
-  border:1px solid #ccc;
-}
-
-button{
-  width:250px;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(45deg,#d4af37,#f1d77a);
-  font-weight:bold;
-  cursor:pointer;
-}
+body{margin:0;height:100vh;background:white;display:flex;justify-content:center;align-items:center;font-family:Arial}
+.box{background:#f2f2f2;padding:50px;border-radius:20px;box-shadow:0 15px 40px rgba(0,0,0,0.15);text-align:center;}
+input{display:block;width:250px;padding:12px;margin:10px auto;border-radius:8px;border:1px solid #ccc;}
+button{width:250px;padding:12px;border:none;border-radius:10px;background:linear-gradient(45deg,#d4af37,#f1d77a);font-weight:bold;cursor:pointer;}
 </style>
 </head>
 
 <body>
-
 <div class="box">
-  <h2>Crear cuenta</h2>
-  <input id="user" placeholder="Usuario">
-  <input id="pass" type="password" placeholder="Contraseña">
-  <button onclick="register()">Crear</button>
+<h2>Crear cuenta</h2>
+<input id="user" placeholder="Usuario">
+<input id="pass" type="password" placeholder="Contraseña">
+<button onclick="register()">Crear cuenta</button>
 </div>
 
 <script>
 function register(){
   let u=document.getElementById("user").value;
   let p=document.getElementById("pass").value;
-  localStorage.setItem(u,p);
-  alert("Cuenta creada");
-  window.location.href="login.html";
+
+  localStorage.setItem("user",u);
+  localStorage.setItem("pass",p);
+
+  window.location.href="welcome.html";
 }
 </script>
-
 </body>
 </html>
