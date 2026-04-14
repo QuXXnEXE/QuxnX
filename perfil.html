@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mi perfil</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  background:white;
+  font-family:Arial;
+  overflow:hidden;
+}
+
+/* CUADRO CENTRAL */
+.profileBox{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:500px;
+  height:350px;
+  background:#f2f2f2;
+  border-radius:25px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.15);
+  padding:30px;
+}
+
+/* FOTO PERFIL */
+.avatar{
+  position:absolute;
+  top:20px;
+  right:20px;
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  background:gold;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:40px;
+  overflow:hidden;
+}
+
+.avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* BOTONES */
+button{
+  padding:12px 20px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(45deg,#d4af37,#f1d77a);
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+.username{
+  font-size:26px;
+  margin-top:20px;
+}
+
+.permisos{
+  margin-top:15px;
+  font-weight:bold;
+}
+
+/* decoraciones movibles */
+.decor{
+  position:absolute;
+  width:120px;
+  cursor:grab;
+}
+</style>
+</head>
+
+<body>
+
+<div class="profileBox">
+  <div class="avatar" id="avatar">⭐</div>
+  <input type="file" id="fileInput" hidden>
+  <button onclick="subirFoto()">Subir foto</button>
+
+  <div class="username" id="username"></div>
+  <div class="permisos" id="permisos"></div>
+
+  <br>
+  <input type="file" id="decorInput" hidden>
+  <button onclick="subirDecor()">Subir imagen decorativa</button>
+</div>
+
+<script>
+// cargar usuario
+let user = localStorage.getItem("currentUser");
+document.getElementById("username").innerText = user;
+
+// permisos creador
+if(user==="Queen Ankarian"){
+ document.getElementById("permisos").innerText="Permisos: Creador 👑";
+}else{
+ document.getElementById("permisos").innerText="Permisos: Usuario";
+}
+
+// SUBIR FOTO PERFIL
+function subirFoto(){
+ document.getElementById("fileInput").click();
+}
+
+fileInput.onchange = e => {
+ let file = e.target.files[0];
+ let reader = new FileReader();
+ reader.onload = function(){
+   localStorage.setItem("avatar", reader.result);
+   mostrarAvatar();
+ }
+ reader.readAsDataURL(file);
+}
+
+function mostrarAvatar(){
+ let data = localStorage.getItem("avatar");
+ if(data){
+   document.getElementById("avatar").innerHTML="<img src='"+data+"'>";
+ }
+}
+mostrarAvatar();
+
+// SUBIR DECORACIONES
+function subirDecor(){
+ document.getElementById("decorInput").click();
+}
+
+decorInput.onchange = e =>{
+ let file=e.target.files[0];
+ let reader=new FileReader();
+ reader.onload=function(){
+   crearDecor(reader.result);
+ }
+ reader.readAsDataURL(file);
+}
+
+function crearDecor(src){
+ let img=document.createElement("img");
+ img.src=src;
+ img.className="decor";
+ img.style.top="100px";
+ img.style.left="100px";
+ document.body.appendChild(img);
+
+ img.onmousedown=function(e){
+   let shiftX=e.clientX-img.getBoundingClientRect().left;
+   let shiftY=e.clientY-img.getBoundingClientRect().top;
+
+   function moveAt(pageX,pageY){
+     img.style.left=pageX-shiftX+'px';
+     img.style.top=pageY-shiftY+'px';
+   }
+
+   function onMouseMove(e){ moveAt(e.pageX,e.pageY); }
+   document.addEventListener('mousemove', onMouseMove);
+
+   img.onmouseup=function(){
+     document.removeEventListener('mousemove', onMouseMove);
+   };
+ };
+ img.ondragstart=()=>false;
+}
+</script>
+
+</body>
+</html>
