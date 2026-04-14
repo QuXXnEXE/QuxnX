@@ -2,172 +2,167 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Mi perfil</title>
+<title>Mi Perfil</title>
 
 <style>
 body{
-  margin:0;
-  height:100vh;
-  background:white;
-  font-family:Arial;
-  overflow:hidden;
+    background:white;
+    font-family:Arial;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
 }
 
-/* CUADRO CENTRAL */
-.profileBox{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width:500px;
-  height:350px;
-  background:#f2f2f2;
-  border-radius:25px;
-  box-shadow:0 15px 40px rgba(0,0,0,0.15);
-  padding:30px;
+.perfilBox{
+    width:650px;
+    height:420px;
+    background:#f1f1f1;
+    border-radius:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+    padding:30px;
+    position:relative;
 }
 
-/* FOTO PERFIL */
-.avatar{
-  position:absolute;
-  top:20px;
-  right:20px;
-  width:90px;
-  height:90px;
-  border-radius:50%;
-  background:gold;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:40px;
-  overflow:hidden;
+.fotoPerfil{
+    position:absolute;
+    top:20px;
+    right:20px;
+    text-align:center;
 }
 
-.avatar img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
+.fotoPerfil img{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    object-fit:cover;
+    background:white;
 }
 
-/* BOTONES */
+.decoracion{
+    position:absolute;
+    width:120px;
+    cursor:grab;
+}
+
 button{
-  padding:12px 20px;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(45deg,#d4af37,#f1d77a);
-  font-weight:bold;
-  cursor:pointer;
-  margin-top:10px;
-}
-
-.username{
-  font-size:26px;
-  margin-top:20px;
+    margin-top:10px;
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(45deg,#caa43b,#f3d87a);
+    cursor:pointer;
 }
 
 .permisos{
-  margin-top:15px;
-  font-weight:bold;
-}
-
-/* decoraciones movibles */
-.decor{
-  position:absolute;
-  width:120px;
-  cursor:grab;
+    margin-top:140px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="profileBox">
-  <div class="avatar" id="avatar">⭐</div>
-  <input type="file" id="fileInput" hidden>
-  <button onclick="subirFoto()">Subir foto</button>
+<div class="perfilBox" id="box">
 
-  <div class="username" id="username"></div>
-  <div class="permisos" id="permisos"></div>
+    <h2 id="nombreUsuario"></h2>
 
-  <br>
-  <input type="file" id="decorInput" hidden>
-  <button onclick="subirDecor()">Subir imagen decorativa</button>
+    <div class="fotoPerfil">
+        <img id="pfp" src="https://cdn-icons-png.flaticon.com/512/616/616490.png">
+        <br>
+        <input type="file" id="pfpInput">
+    </div>
+
+    <div class="permisos">
+        <h3>Permisos:</h3>
+        <p id="permisoTexto"></p>
+        <input type="file" id="decorInput">
+        <p>Subir imagen decorativa</p>
+    </div>
+
+    <img id="decoracion" class="decoracion" style="display:none;">
+
 </div>
 
 <script>
-// cargar usuario
+// nombre usuario
 let user = localStorage.getItem("currentUser");
-document.getElementById("username").innerText = user;
+document.getElementById("nombreUsuario").innerText = user;
 
-// permisos creador
-if(user==="Queen Ankarian"){
- document.getElementById("permisos").innerText="Permisos: Creador 👑";
+// permisos
+if(user === "Queen Ankarian"){
+    document.getElementById("permisoTexto").innerText = "Cuenta del creador 👑";
 }else{
- document.getElementById("permisos").innerText="Permisos: Usuario";
+    document.getElementById("permisoTexto").innerText = "Usuario normal";
 }
 
-// SUBIR FOTO PERFIL
-function subirFoto(){
- document.getElementById("fileInput").click();
+// FOTO PERFIL GUARDADA
+let savedPfp = localStorage.getItem("pfp");
+if(savedPfp){
+    document.getElementById("pfp").src = savedPfp;
 }
 
-fileInput.onchange = e => {
- let file = e.target.files[0];
- let reader = new FileReader();
- reader.onload = function(){
-   localStorage.setItem("avatar", reader.result);
-   mostrarAvatar();
- }
- reader.readAsDataURL(file);
+document.getElementById("pfpInput").onchange = function(){
+    let reader = new FileReader();
+    reader.onload = e => {
+        localStorage.setItem("pfp", e.target.result);
+        document.getElementById("pfp").src = e.target.result;
+    }
+    reader.readAsDataURL(this.files[0]);
+};
+
+// IMAGEN DECORATIVA GUARDADA
+let decor = document.getElementById("decoracion");
+
+// cargar imagen guardada
+let savedDecor = localStorage.getItem("decorImg");
+if(savedDecor){
+    decor.src = savedDecor;
+    decor.style.display="block";
 }
 
-function mostrarAvatar(){
- let data = localStorage.getItem("avatar");
- if(data){
-   document.getElementById("avatar").innerHTML="<img src='"+data+"'>";
- }
-}
-mostrarAvatar();
-
-// SUBIR DECORACIONES
-function subirDecor(){
- document.getElementById("decorInput").click();
+// cargar posicion guardada
+let posX = localStorage.getItem("decorX");
+let posY = localStorage.getItem("decorY");
+if(posX && posY){
+    decor.style.left = posX + "px";
+    decor.style.top = posY + "px";
 }
 
-decorInput.onchange = e =>{
- let file=e.target.files[0];
- let reader=new FileReader();
- reader.onload=function(){
-   crearDecor(reader.result);
- }
- reader.readAsDataURL(file);
+document.getElementById("decorInput").onchange = function(){
+    let reader = new FileReader();
+    reader.onload = e => {
+        localStorage.setItem("decorImg", e.target.result);
+        decor.src = e.target.result;
+        decor.style.display="block";
+    }
+    reader.readAsDataURL(this.files[0]);
+};
+
+// MOVER IMAGEN Y GUARDAR POSICION
+let isDragging=false;
+
+decor.onmousedown = function(){
+    isDragging=true;
 }
 
-function crearDecor(src){
- let img=document.createElement("img");
- img.src=src;
- img.className="decor";
- img.style.top="100px";
- img.style.left="100px";
- document.body.appendChild(img);
+document.onmouseup = function(){
+    isDragging=false;
+}
 
- img.onmousedown=function(e){
-   let shiftX=e.clientX-img.getBoundingClientRect().left;
-   let shiftY=e.clientY-img.getBoundingClientRect().top;
+document.onmousemove = function(e){
+    if(!isDragging) return;
 
-   function moveAt(pageX,pageY){
-     img.style.left=pageX-shiftX+'px';
-     img.style.top=pageY-shiftY+'px';
-   }
+    let box = document.getElementById("box").getBoundingClientRect();
 
-   function onMouseMove(e){ moveAt(e.pageX,e.pageY); }
-   document.addEventListener('mousemove', onMouseMove);
+    let x = e.clientX - box.left - 60;
+    let y = e.clientY - box.top - 60;
 
-   img.onmouseup=function(){
-     document.removeEventListener('mousemove', onMouseMove);
-   };
- };
- img.ondragstart=()=>false;
+    decor.style.left = x+"px";
+    decor.style.top = y+"px";
+
+    localStorage.setItem("decorX", x);
+    localStorage.setItem("decorY", y);
 }
 </script>
 
