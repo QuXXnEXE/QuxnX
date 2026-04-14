@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Bienvenido</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  background:white;
+  overflow:hidden;
+  font-family:Arial, Helvetica, sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* estrellas */
+.star{
+  position:absolute;
+  width:6px;
+  height:6px;
+  background:gold;
+  border-radius:50%;
+  opacity:0.8;
+  animation:float 20s linear infinite;
+}
+
+@keyframes float{
+  from{
+    transform:rotate(0deg) translateX(250px) rotate(0deg);
+  }
+  to{
+    transform:rotate(360deg) translateX(250px) rotate(-360deg);
+  }
+}
+
+/* caja central */
+.box{
+  position:relative;
+  background:#f2f2f2;
+  padding:60px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 15px 40px rgba(0,0,0,0.15);
+  z-index:2;
+}
+
+button{
+  margin-top:30px;
+  padding:14px 25px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(45deg,#d4af37,#f1d77a);
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- estrellas generadas -->
+<script>
+for(let i=0;i<40;i++){
+  let s=document.createElement("div");
+  s.className="star";
+  s.style.top=Math.random()*100+"%";
+  s.style.left=Math.random()*100+"%";
+  s.style.animationDuration=(15+Math.random()*20)+"s";
+  document.body.appendChild(s);
+}
+</script>
+
+<div class="box">
+  <h1>Gracias por crear una cuenta aquí</h1>
+  <p>Ahora existes y eres parte de nosotros</p>
+  <button onclick="location.href='index.html'">Volver al inicio</button>
+</div>
+
+</body>
+</html>
